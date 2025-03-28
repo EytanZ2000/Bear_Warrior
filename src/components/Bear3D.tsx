@@ -43,6 +43,13 @@ export function Bear3D() {
         return '#F0F0F0';
       case 'panda':
         return '#FFFFFF'; // Main panda color is white
+      case 'grizzly':
+        return '#8B4513'; // Dark brown for grizzly
+      case 'cosmic':
+        // Use animated color for cosmic bear
+        const time = Date.now() * 0.001;
+        const hue = (time * 50) % 360;
+        return `hsl(${hue}, 70%, 50%)`; // Shifting rainbow color
       default:
         return '#8B4513'; // Default brown bear
     }
@@ -53,8 +60,55 @@ export function Bear3D() {
       {/* Bear Body */}
       <mesh castShadow position={[0, 0.5, 0]}>
         <sphereGeometry args={[0.5, 32, 32]} />
-        <meshStandardMaterial color={getSkinColor()} />
+        <meshStandardMaterial 
+          color={getSkinColor()} 
+          metalness={currentSkin === 'cosmic' ? 0.8 : 0}
+          roughness={currentSkin === 'cosmic' ? 0.2 : 0.8}
+        />
       </mesh>
+
+      {/* Cosmic bear special effects */}
+      {currentSkin === 'cosmic' && (
+        <>
+          <mesh position={[0, 0.5, 0]}>
+            <sphereGeometry args={[0.6, 32, 32]} />
+            <meshStandardMaterial 
+              color="#ffffff"
+              transparent={true}
+              opacity={0.2}
+            />
+          </mesh>
+          <pointLight
+            position={[0, 0.5, 0]}
+            distance={1}
+            intensity={1}
+            color={getSkinColor()}
+          />
+        </>
+      )}
+
+      {/* Rest of bear parts - update their material properties */}
+      <mesh castShadow position={[0, 1, 0]}>
+        <sphereGeometry args={[0.45, 32, 32]} />
+        <meshStandardMaterial 
+          color={getSkinColor()}
+          metalness={currentSkin === 'cosmic' ? 0.8 : 0}
+          roughness={currentSkin === 'cosmic' ? 0.2 : 0.8}
+        />
+      </mesh>
+
+      {/* For Grizzly bear, add fur texture through normal mapping */}
+      {currentSkin === 'grizzly' && (
+        <mesh castShadow position={[0, 0.5, 0]}>
+          <sphereGeometry args={[0.52, 32, 32]} />
+          <meshStandardMaterial
+            color="#704214"
+            transparent={true}
+            opacity={0.3}
+            roughness={1}
+          />
+        </mesh>
+      )}
 
       {/* Additional black patches for panda */}
       {currentSkin === 'panda' && (
