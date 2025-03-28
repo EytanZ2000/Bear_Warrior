@@ -41,6 +41,8 @@ export function Bear3D() {
         return '#4A2810';
       case 'polar':
         return '#F0F0F0';
+      case 'panda':
+        return '#FFFFFF'; // Main panda color is white
       default:
         return '#8B4513'; // Default brown bear
     }
@@ -53,6 +55,27 @@ export function Bear3D() {
         <sphereGeometry args={[0.5, 32, 32]} />
         <meshStandardMaterial color={getSkinColor()} />
       </mesh>
+
+      {/* Additional black patches for panda */}
+      {currentSkin === 'panda' && (
+        <>
+          {/* Eye patches */}
+          <mesh castShadow position={[0.2, 1.1, 0.3]}>
+            <sphereGeometry args={[0.15, 32, 32]} />
+            <meshStandardMaterial color="black" />
+          </mesh>
+          <mesh castShadow position={[-0.2, 1.1, 0.3]}>
+            <sphereGeometry args={[0.15, 32, 32]} />
+            <meshStandardMaterial color="black" />
+          </mesh>
+          
+          {/* Body patches */}
+          <mesh castShadow position={[0, 0.5, 0.3]}>
+            <sphereGeometry args={[0.3, 32, 32]} />
+            <meshStandardMaterial color="black" />
+          </mesh>
+        </>
+      )}
 
       {/* Bear Head */}
       <mesh castShadow position={[0, 1, 0]}>
