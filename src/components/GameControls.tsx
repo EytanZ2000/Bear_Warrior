@@ -1,18 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export const GameControls: React.FC = () => {
   const [isVisible, setIsVisible] = useState(true);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key.toLowerCase() === 'x') {
+        setIsVisible((prev) => !prev);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
   if (!isVisible) return null;
 
   return (
-    <div className="p-4 bg-white/80 rounded-lg shadow-md relative">
-      <button
-        onClick={() => setIsVisible(false)}
-        className="absolute top-2 right-2 text-red-500 hover:text-red-700"
-      >
-        X
-      </button>
+    <div className="p-4 bg-white/80 rounded-lg shadow-md">
       <h2 className="text-xl font-bold mb-2">Controls</h2>
       <div className="grid grid-cols-2 gap-4">
         <div>
@@ -41,6 +48,12 @@ export const GameControls: React.FC = () => {
         </div>
         <div>
           <span className="font-semibold">Camera Control:</span> Mouse
+        </div>
+        <div>
+          <span className="font-semibold">Toggle Controls:</span> X
+        </div>
+        <div>
+          <span className="font-semibold">Toggle Camera View:</span> J
         </div>
       </div>
     </div>
