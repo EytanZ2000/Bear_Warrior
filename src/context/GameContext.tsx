@@ -1,10 +1,22 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 
+interface WeaponData {
+  id: string;
+  type: string;
+  name: string;
+  icon: string;
+  level: number;
+  damage: number;
+  attackSpeed: number;
+  effects?: string[];
+}
+
 interface GameContextType {
   position: { x: number; y: number; z: number };
   velocity: { x: number; y: number; z: number };
   isJumping: boolean;
   isAttacking: boolean;
+  attackCooldown: boolean;
   honey: number;
   inventory: Array<{
     id: string;
@@ -26,6 +38,7 @@ interface GameContextType {
   currentLevel: number;
   isInventoryOpen: boolean;
   isShopOpen: boolean;
+  currentWeaponLevel: number;
   setSkin: (skinId: string) => void;
   purchaseItem: (type: string, itemId: string, price: number) => void;
   equipItem: (item: any) => void;
@@ -42,6 +55,7 @@ const GameContext = createContext<GameContextType>({
   velocity: { x: 0, y: 0, z: 0 },
   isJumping: false,
   isAttacking: false,
+  attackCooldown: false,
   honey: STARTING_HONEY,
   inventory: [],
   equipment: {},
@@ -50,6 +64,7 @@ const GameContext = createContext<GameContextType>({
   currentLevel: 1,
   isInventoryOpen: false,
   isShopOpen: false,
+  currentWeaponLevel: 1,
   setSkin: () => {},
   purchaseItem: () => {},
   equipItem: () => {},
@@ -65,6 +80,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [velocity, setVelocity] = useState({ x: 0, y: 0, z: 0 });
   const [isJumping, setIsJumping] = useState(false);
   const [isAttacking, setIsAttacking] = useState(false);
+  const [attackCooldown, setAttackCooldown] = useState(false);
   const [honey, setHoney] = useState(STARTING_HONEY);
   const [inventory, setInventory] = useState([]);
   const [equipment, setEquipment] = useState({});
@@ -73,6 +89,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [currentLevel, setCurrentLevel] = useState(1);
   const [isInventoryOpen, setIsInventoryOpen] = useState(false);
   const [isShopOpen, setIsShopOpen] = useState(false);
+  const [currentWeaponLevel, setCurrentWeaponLevel] = useState(1);
   const keysPressed = useRef<Set<string>>(new Set());
 
   useEffect(() => {
@@ -89,12 +106,6 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (e.key.toLowerCase() === 'b') {
         setIsShopOpen(prev => !prev);
         setIsInventoryOpen(false);
-      }
-
-      // Attack with G or Space
-      if (e.key.toLowerCase() === 'g' || e.key === ' ') {
-        setIsAttacking(true);
-        setTimeout(() => setIsAttacking(false), 500);
       }
     };
 
@@ -221,6 +232,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       velocity,
       isJumping,
       isAttacking,
+      attackCooldown,
       honey,
       inventory,
       equipment,
@@ -229,6 +241,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       currentLevel,
       isInventoryOpen,
       isShopOpen,
+      currentWeaponLevel,
       setSkin,
       purchaseItem,
       equipItem,
