@@ -28,7 +28,7 @@ export function Bear3D() {
     };
   }, []);
 
-  useFrame((state) => {
+  useFrame(() => {
     if (bearRef.current) {
       bearRef.current.position.x = position.x;
       bearRef.current.position.y = position.y;
@@ -40,26 +40,16 @@ export function Bear3D() {
         bearRef.current.rotation.y = angle;
       }
 
-      // Animate arms when attacking
-      if (armsRef.current && isAttacking) {
-        const time = state.clock.getElapsedTime();
-        armsRef.current.rotation.x = Math.sin(time * 15) * 0.5;
-      } else if (armsRef.current) {
-        // Gentle arm swing while walking
-        const time = state.clock.getElapsedTime();
-        armsRef.current.rotation.x = Math.sin(time * 5) * 0.2;
-      }
-
       // Update camera position based on the selected mode
       if (cameraMode === 'third-person') {
-        camera.position.set(position.x, position.y + 5, position.z + 10);
+        camera.position.set(position.x, position.y + 6, position.z + 12);
         camera.lookAt(position.x, position.y + 1, position.z);
       } else if (cameraMode === 'over-the-shoulder') {
-        camera.position.set(position.x - 2, position.y + 2, position.z + 5);
+        camera.position.set(position.x - 3, position.y + 3, position.z + 6);
         camera.lookAt(position.x, position.y + 1, position.z);
       } else if (cameraMode === 'first-person') {
-        camera.position.set(position.x, position.y + 1.5, position.z);
-        camera.lookAt(position.x + velocity.x, position.y + 1.5, position.z + velocity.z);
+        camera.position.set(position.x, position.y + 1.8, position.z);
+        camera.lookAt(position.x + velocity.x, position.y + 1.8, position.z + velocity.z);
       }
     }
   });
@@ -240,22 +230,25 @@ export function Bear3D() {
       {equipment.weapon && (
         <group 
           ref={weaponRef}
-          position={cameraMode === 'first-person' ? [0.5, -0.5, -1] : [0.4, 0.5, 0]} 
+          position={cameraMode === 'first-person' ? [0.6, -0.4, -1] : [0.4, 0.5, 0]} 
           rotation={[0, 0, isAttacking ? -Math.PI / 2 : -Math.PI / 6]}
         >
           {equipment.weapon === 'sword' && (
             <>
+              {/* Sword Blade */}
               <mesh castShadow>
-                <boxGeometry args={[0.08, 0.8, 0.08]} />
+                <boxGeometry args={[0.08, 1.2, 0.08]} />
                 <meshStandardMaterial color="silver" metalness={0.9} roughness={0.1} />
               </mesh>
-              <mesh castShadow position={[0, -0.35, 0]}>
-                <cylinderGeometry args={[0.05, 0.05, 0.2]} />
-                <meshStandardMaterial color="brown" roughness={0.8} />
+              {/* Sword Guard */}
+              <mesh castShadow position={[0, -0.6, 0]}>
+                <boxGeometry args={[0.3, 0.1, 0.1]} />
+                <meshStandardMaterial color="gold" metalness={0.9} roughness={0.2} />
               </mesh>
-              <mesh castShadow position={[0, 0.4, 0]}>
-                <boxGeometry args={[0.2, 0.08, 0.08]} />
-                <meshStandardMaterial color="gold" metalness={0.9} roughness={0.1} />
+              {/* Sword Handle */}
+              <mesh castShadow position={[0, -0.9, 0]}>
+                <cylinderGeometry args={[0.05, 0.05, 0.4]} />
+                <meshStandardMaterial color="brown" roughness={0.8} />
               </mesh>
             </>
           )}

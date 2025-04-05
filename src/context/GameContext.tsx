@@ -176,12 +176,15 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const purchaseItem = (type: string, itemId: string, price: number) => {
-    if (honey >= price) {
+    const itemName = itemId.charAt(0).toUpperCase() + itemId.slice(1);
+    const alreadyOwned = inventory.some(item => item.name === itemName);
+
+    if (!alreadyOwned && honey >= price) {
       setHoney(prev => prev - price);
       setInventory(prev => [...prev, { 
         id: itemId, 
         type, 
-        name: itemId, 
+        name: itemName, 
         icon: '⚔️',
         level: 1
       }]);
@@ -202,13 +205,18 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const collectWeapon = (weaponType: string) => {
-    setInventory(prev => [...prev, {
-      id: weaponType,
-      type: 'weapon',
-      name: weaponType.charAt(0).toUpperCase() + weaponType.slice(1),
-      icon: getWeaponIcon(weaponType),
-      level: 1
-    }]);
+    const weaponName = weaponType.charAt(0).toUpperCase() + weaponType.slice(1);
+    const alreadyOwned = inventory.some(item => item.name === weaponName);
+
+    if (!alreadyOwned) {
+      setInventory(prev => [...prev, {
+        id: weaponType,
+        type: 'weapon',
+        name: weaponName,
+        icon: getWeaponIcon(weaponType),
+        level: 1
+      }]);
+    }
   };
 
   const collectHoney = (amount: number) => {

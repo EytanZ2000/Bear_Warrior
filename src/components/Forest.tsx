@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plane, Cloud } from '@react-three/drei';
+import { Plane, Cloud, Text } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
@@ -86,17 +86,25 @@ export function Forest() {
         <group key={`weapon-${i}`} position={weapon.position as any} rotation={[0, Math.random() * Math.PI * 2, 0]}>
           {weapon.type === 'sword' ? (
             <group>
+              {/* Sword Blade */}
               <mesh castShadow>
-                <boxGeometry args={[0.1, 0.8, 0.1]} />
-                <meshStandardMaterial color="silver" metalness={0.8} roughness={0.2} />
+                <boxGeometry args={[0.08, 1.2, 0.08]} />
+                <meshStandardMaterial color="silver" metalness={0.9} roughness={0.1} />
               </mesh>
-              <mesh castShadow position={[0, 0.4, 0]}>
-                <boxGeometry args={[0.2, 0.1, 0.1]} />
-                <meshStandardMaterial color="gold" metalness={0.8} roughness={0.2} />
+              {/* Sword Guard */}
+              <mesh castShadow position={[0, -0.6, 0]}>
+                <boxGeometry args={[0.3, 0.1, 0.1]} />
+                <meshStandardMaterial color="gold" metalness={0.9} roughness={0.2} />
+              </mesh>
+              {/* Sword Handle */}
+              <mesh castShadow position={[0, -0.9, 0]}>
+                <cylinderGeometry args={[0.05, 0.05, 0.4]} />
+                <meshStandardMaterial color="brown" roughness={0.8} />
               </mesh>
             </group>
           ) : (
             <group>
+              {/* Axe */}
               <mesh castShadow>
                 <cylinderGeometry args={[0.05, 0.05, 0.6]} />
                 <meshStandardMaterial color="brown" />
@@ -107,6 +115,10 @@ export function Forest() {
               </mesh>
             </group>
           )}
+          {/* Display weapon name */}
+          <Text position={[0, 1, 0]} fontSize={0.5} color="white">
+            {weapon.type.charAt(0).toUpperCase() + weapon.type.slice(1)}
+          </Text>
         </group>
       ))}
     </group>
